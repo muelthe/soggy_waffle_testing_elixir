@@ -1,0 +1,42 @@
+
+
+services:
+  dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    init: true
+    env_file: .env
+    environment:
+        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    stdin_open: true
+    tty: true
+    ports:
+      - "4000:4000"
+    volumes:
+      - type: bind
+        source: .
+        target: /app
+    networks:
+      - dev-net
+
+  db:
+    image: postgres:alpine
+    init: true
+    env_file: .env
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      LANG: en_GB.UTF8
+    volumes:
+      - type: volume
+        source: db-vol
+        target: /var/lib/postgresql/data
+    networks:
+      - dev-net
+
+volumes:
+  dev-vol: {}
+  db-vol: {}
+
+networks:
+  dev-net: {}
